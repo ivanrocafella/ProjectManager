@@ -1,0 +1,48 @@
+﻿@using ProjectManager.DAL.ViewModels
+@model EditProjectViewModel
+
+<form id="EditForm" class="pb-5" action="/Project/Edit" method="post">
+    <h3>Форма редактирования проекта</h3>
+    <div>
+        <label asp-for="Name"></label><br />
+        <input asp-for="Name" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div>
+        <label asp-for="CustomerCompanyName"></label><br />
+        <input asp-for="CustomerCompanyName" />
+        <span asp-validation-for="CustomerCompanyName" class="text-danger"></span>
+    </div>
+    <div>
+        <label asp-for="ExecutorCompanyName"></label><br />
+        <input asp-for="ExecutorCompanyName" />
+        <span asp-validation-for="ExecutorCompanyName" class="text-danger"></span>
+    </div>
+    <div>
+        <label asp-for="PriorityId"></label><br />
+        <select asp-for="PriorityId">
+            @foreach (var item in Model.Priorities)
+            {
+                <option value="@Array.IndexOf(Model.Priorities, item)">@item</option>
+            }
+        </select>
+    </div>
+    <div>
+        <label asp-for="DateStart"></label><br />
+        <input asp-for="DateStart" required />
+        <span asp-validation-for="DateStart" class="text-danger"></span>
+    </div>
+    <div>
+        <label asp-for="DateEnd"></label><br />
+        <input asp-for="DateEnd" required />
+        <span asp-validation-for="DateEnd" class="text-danger"></span>
+    </div>
+    <input type="hidden" asp-for="Id" />
+    <div>
+        <input type="submit" class="project_send btn btn-primary" value="Редактировать" />
+    </div>
+</form>
+
+@section Scripts{
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

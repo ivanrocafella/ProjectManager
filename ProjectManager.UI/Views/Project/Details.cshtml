@@ -1,0 +1,111 @@
+﻿@using ProjectManager.DAL.ViewModels
+@model DetailsProjectViewModel
+
+<head>
+    <base target="_top">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+</head>
+
+<div class="card mb-4 py-3 mt-2">
+    <div class="card-body py-0 row justify-content-lg-between">
+        <div class="row justify-content-lg-start justify-content-md-between justify-content-lg-between col col-lg-7">
+            <div class="col-lg-8 col-md-7 p-0">
+                <h5 class="category-header font-weight-bold">@Model.Project.Name</h5>
+                <p class="card-text">
+                    <span>Компания заказчик: @Model.Project.CustomerCompanyName</span>
+                    <br /><span>Компания исполнитель: @Model.Project.ExecutorCompanyName</span>
+                    <br /><span>Дата создания: @Model.Project.CreatedAd</span>
+                    <br /><span>Статус проекта: @Model.Project.Priority</span>
+                    <br /><span>Дата начала: @Model.Project.DateStart</span>
+                    <br /><span>Дата завершения: @Model.Project.DateEnd</span>
+                </p>
+            </div>
+        </div>
+        <div class="row col col-lg-3 p-0">
+            <a asp-action="Edit" asp-controller="Project" asp-route-id="@Model.Project.Id" class="btn btn-light float-right col col-sm-12">Редактировать</a>
+        </div>
+    </div>
+</div>
+<h2>Руководитель проекта</h2>
+@if (Model.Project.ProjectManager != null)
+{
+    <a class="card href_card" id="a_ProjectManager" style="display: block; text-decoration: none;" asp-controller="Employee" asp-action="Details" asp-route-id="@Model.Project.ProjectManagerId">
+        <div class="card-body text-primary">
+            <h5 class="card-title text-center" style="color: black;">@Model.Project.ProjectManager.FirstName</h5>
+            <h5 class="card-title text-center" style="color: black;">@Model.Project.ProjectManager.SurName</h5>
+            <h5 class="card-title text-center" style="color: black;">@Model.Project.ProjectManager.PatronymicName</h5>
+            <input type="button" class="employee_remove btn btn-danger" onclick="removePmFromProject('@Model.Project.Id')" value="Снять с должности" />
+        </div>
+    </a>
+}
+<h2>Исполнители</h2>
+<div class="card-column">
+    @foreach (var item in Model.Executors)
+    {
+        <a class="card href_card" id="a_@item.Id" style="display: block; text-decoration: none;" asp-controller="Employee" asp-action="Details" asp-route-id="@item.Id">
+            <div class="card-body text-primary">
+                <h5 class="card-title text-center" style="color: black;">@item.FirstName</h5>
+                <input type="button" class="employee_remove btn btn-danger" onclick="removeFromProject('@Model.Project.Id','@item.Id')" value="Снять с проекта" />
+            </div>
+        </a>
+    }
+</div>
+<h2>Свободные сотрудники</h2>
+<form class="pb-5" action="/Project/Details" method="post">
+    <div class="form-group">
+        <select name="employeeId" class="selectpicker" data-live-search="true">
+            <option selected>Ничего не выбрано</option>
+            @foreach (var item in Model.FreeEmployees)
+            {
+                <option data-tokens="@string.Join(" ", item.SurName, item.FirstName, item.PatronymicName)" value="@item.Id">@string.Join(" ", item.SurName, item.FirstName, item.PatronymicName)</option>
+            }
+        </select>
+    </div>
+    <input name="projectId" type="hidden" value="@Model.Project.Id">
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary form-control btn-submit">Добавить</button>
+    </div>
+</form>
+
+
+
+@section Scripts
+{
+    <script>
+        function removeFromProject(projectId, employeeId) {
+            event.preventDefault();
+            var parent = document.querySelector('#a_' + employeeId + '')
+            $.ajax(
+                {
+                    url: '@Url.Action("RemoveFromProject", "Project")',
+                    type: 'POST',
+                    data: {
+                        'projectId': projectId,
+                        'employeeId': employeeId
+                    }
+                }
+            )
+            parent.remove();
+        }
+
+        function removePmFromProject(projectId) {
+            event.preventDefault();
+            var parent = document.querySelector('#a_ProjectManager')
+            $.ajax(
+                {
+                    url: '@Url.Action("RemoveProjectManagerFromProject", "Project")',
+                    type: 'POST',
+                    data: {
+                        'id': projectId
+                    }
+                }
+            )
+            parent.remove();
+        }
+    </script>
+}

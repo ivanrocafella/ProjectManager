@@ -1,0 +1,107 @@
+﻿@using ProjectManager.DAL.ViewModels
+@model EmployeesAndEmployeeViewModel
+
+
+@{
+    ViewData["Title"] = "Все сотрудники";
+}
+<h2>@ViewData["Title"]</h2>
+
+
+
+<div class="card-column" id="employees">
+    @if (Model.Employees.Count == 0)
+    {
+        <h2>Сотрудников ещё нет</h2>
+    }
+    else
+    {
+        foreach (var item in Model.Employees)
+        {
+            <a class="card href_card" id="a_@item.Id" style="display: block; text-decoration: none;" asp-controller="Employee" asp-action="Details" asp-route-id="@item.Id">
+                <div class="card-body text-primary">
+                    <h5 class="card-title text-center" style="color: black;">@item.FirstName</h5>
+                    <input type="button" class="employee_remove btn btn-danger" onclick="remove('@item.Id')" value="Удалить" />
+                </div>
+            </a>
+        }
+    }
+</div>
+
+
+<form id="AddForm" class="pb-5">
+    <h3>Форма добавления нового сотрудника</h3>
+    <div>
+        <label asp-for="FirstName"></label><br />
+        <input asp-for="FirstName" />
+        <span asp-validation-for="FirstName" class="text-danger"></span>
+    </div>
+    <div>
+        <label asp-for="SurName"></label><br />
+        <input asp-for="SurName" />
+        <span asp-validation-for="SurName" class="text-danger"></span>
+    </div>
+    <div>
+        <label asp-for="PatronymicName"></label><br />
+        <input asp-for="PatronymicName" />
+        <span asp-validation-for="PatronymicName" class="text-danger"></span>
+    </div>
+    <div>
+        <label asp-for="Email"></label><br />
+        <input asp-for="Email" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+    <div>
+        <input type="submit" class="employee_send btn btn-primary" value="Добавить" />
+    </div>
+</form>
+
+@section Scripts{
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    <script>
+
+    $('#AddForm').submit(function (e) {
+        e.preventDefault();
+        var form = $('#AddForm')[0];
+        var formData = new FormData(form);
+        console.log(formData)
+        $.ajax({
+            url: 'Employee/Add',
+            type: 'POST',
+            processData: false,
+            contentType: false,
+            data: formData,
+            success: function (response) {
+                console.log(response.success);
+                if (response.success) {
+                    console.log(response.employeeJS);
+                    let a =  '<a class="card href_card" id="a_' + response.employeeJS.id + '" style="display: block; text-decoration: none;" href="/Employee/Details/' + response.employeeJS.id + '">' +
+                        '<div class="card-body text-primary">' +
+                        '<h5 class="card-title text-center" style="color: black;">' + response.employeeJS.firstName + '</h5>' +
+                        '<input type="button" class="employee_remove btn btn-danger" onclick="remove(' + response.employeeJS.id + ')" value="Удалить"/>' +
+                        '</div></a>';
+                        $('#employees h2').hide()
+                        $('#employees').prepend(a)
+                }
+            }
+        })
+    })
+
+
+
+        function remove(id) {
+            event.preventDefault();
+            var parent = document.querySelector('#a_' + id + '')
+            parent.remove();
+            $.ajax(
+                {
+                    url: 'Employee/Remove',
+                    type: 'POST',
+                    data: { 'id': id }
+                }
+            )
+        }
+
+    </script>
+
+}

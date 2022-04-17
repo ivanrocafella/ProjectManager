@@ -1,0 +1,34 @@
+﻿@using ProjectManager.DAL.ViewModels
+@model EditEmployeeViewModel
+
+<form id="EditForm" class="pb-5" action="/Employee/Edit" method="post">
+    <h3>Форма редактирования сотрудника</h3>
+    <div>
+        <label asp-for="FirstName"></label><br />
+        <input asp-for="FirstName" />
+        <span asp-validation-for="FirstName" class="text-danger"></span>
+    </div>
+    <div>
+        <label asp-for="SurName"></label><br />
+        <input asp-for="SurName" />
+        <span asp-validation-for="SurName" class="text-danger"></span>
+    </div>
+    <div>
+        <label asp-for="PatronymicName"></label><br />
+        <input asp-for="PatronymicName" />
+        <span asp-validation-for="PatronymicName" class="text-danger"></span>
+    </div>
+    <div>
+        <label asp-for="Email"></label><br />
+        <input asp-for="Email" value="@Model.Email" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+    <input type="hidden" asp-for="Id" />
+    <div>
+        <input type="submit" class="employee_send btn btn-primary" value="Редактировать" />
+    </div>
+</form>
+
+@section Scripts{
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

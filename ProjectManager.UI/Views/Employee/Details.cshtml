@@ -1,0 +1,108 @@
+﻿@using ProjectManager.DAL.ViewModels
+@model DetailsEmployeeViewModel
+
+<head>
+    <base target="_top">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+</head>
+
+<div class="card mb-4 py-3 mt-2">
+    <div class="card-body py-0 row justify-content-lg-between">
+        <div class="row justify-content-lg-start justify-content-md-between justify-content-lg-between col col-lg-7">
+            <div class="col-lg-8 col-md-7 p-0">
+                <p class="card-text">
+                    <span>Фамилия: @Model.Employee.SurName</span>
+                    <br /><span>Имя: @Model.Employee.FirstName</span>
+                    <br /><span>Отчество: @Model.Employee.PatronymicName</span>
+                    <br /><span>Email: @Model.Employee.Email</span>
+                </p>
+            </div>
+        </div>
+        <div class="row col col-lg-3 p-0">
+            <a asp-action="Edit" asp-controller="Employee" asp-route-id="@Model.Employee.Id" class="btn btn-light float-right col col-sm-12">Редактировать</a>
+        </div>
+    </div>
+</div>
+<h2>Закрепленные проекты в качестве руководителя</h2>
+<div class="card-column">
+    @foreach (var item in Model.ManagedProjects)
+    {
+        <a class="card href_card" id="aPm_@item.Id" style="display: block; text-decoration: none;" asp-controller="Project" asp-action="Details" asp-route-id="@item.Id">
+            <div class="card-body text-primary">
+                <h5 class="card-title text-center" style="color: black;">@item.Name</h5>
+                <input type="button" class="project_remove btn btn-danger" onclick="removePmFromProject('@item.Id')" value="Открепить проект" />
+            </div>
+        </a>
+    }
+</div>
+<h2>Закрепленные проекты в качестве исполнителя</h2>
+<div class="card-column">
+    @foreach (var item in Model.PinnedProjects)
+    {
+        <a class="card href_card" id="a_@item.Id" style="display: block; text-decoration: none;" asp-controller="Project" asp-action="Details" asp-route-id="@item.Id">
+            <div class="card-body text-primary">
+                <h5 class="card-title text-center" style="color: black;">@item.Name</h5>
+                <input type="button" class="project_remove btn btn-danger" onclick="removeFromProject('@item.Id','@Model.Employee.Id')" value="Открепить проект" />
+            </div>
+        </a>
+    }
+</div>
+<h2>Незакрепленные проекты</h2>
+<form class="pb-5" action="/Employee/Details" method="post">
+    <div class="form-group">
+        <select name="projectId" class="selectpicker" data-live-search="true">
+            <option selected>Ничего не выбрано</option>
+            @foreach (var item in Model.FreeProjects)
+            {
+                <option data-tokens="@item.Name" value="@item.Id">@item.Name</option>
+            }
+        </select>
+    </div>
+    <input name="employeeId" type="hidden" value="@Model.Employee.Id">
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary form-control btn-submit">Добавить</button>
+    </div>
+</form>
+
+
+
+@section Scripts
+{
+    <script>
+        function removeFromProject(projectId, employeeId) {
+            event.preventDefault();
+            var parent = document.querySelector('#a_' + projectId + '')
+            $.ajax(
+                {
+                    url: '@Url.Action("RemoveFromProject", "Project")',
+                    type: 'POST',
+                    data: {
+                        'projectId': projectId,
+                        'employeeId': employeeId
+                    }
+                }
+            )
+            parent.remove();
+        }
+
+        function removePmFromProject(projectId) {
+            event.preventDefault();
+            var parent = document.querySelector('#aPm_' + projectId + '')
+            $.ajax(
+                {
+                    url: '@Url.Action("RemoveProjectManagerFromProject", "Project")',
+                    type: 'POST',
+                    data: {
+                        'id': projectId
+                    }
+                }
+            )
+            parent.remove();
+        }
+    </script>
+}

@@ -1,0 +1,181 @@
+﻿@using ProjectManager.DAL.ViewModels
+@model ProjectsAndProjectViewModel
+
+@{
+    ViewData["Title"] = "Все проекты";
+}
+<h2>@ViewData["Title"]</h2>
+
+<div class="row">
+    <div class="col-9">
+        <div class="card-column" id="projects">
+            @if (Model.Projects.Count == 0)
+            {
+                <h2>Проекты ещё не добавлены</h2>
+            }
+            else
+            {
+                @foreach (var item in Model.Projects)
+                {
+                    <a class="card href_card" id="a_@item.Id" style="display: block; text-decoration: none;" asp-controller="Project" asp-action="Details" asp-route-id="@item.Id">
+                        <div class="card-body text-primary">
+                            <h5 class="card-title text-center" style="color: black;">@item.Name</h5>
+                            <input type="button" class="project_remove btn btn-danger" onclick="remove('@item.Id')" value="Удалить" />
+                        </div>
+                    </a>
+                }
+            }
+        </div>
+    </div>
+    <div class="col">
+        <h2>Фильтры</h2>
+        <form class="row pb-5" action="/Project/Index" method="get">
+            <div class="col-12">
+                <label class="form-label">По датe начала</label>
+            </div>
+            <div class="col-md-6" id="DateStart">
+                <label for="DateStartFrom" class="form-label">От:</label>
+                <input type="datetime-local" class="form-control" id="DateStartFrom" name="DateStartFrom">
+            </div>
+            <div class="col-md-6">
+                <label for="DateStartBefore" class="form-label">До:</label>
+                <input type="datetime-local" class="form-control" id="DateStartBefore" name="DateStartBefore">
+            </div>
+            <div class="col-12">
+                <label for="Name" class="form-label">Название</label>
+                <input type="text" class="form-control" id="Name" name="Name">
+            </div>
+            <div class="col-12">
+                <label for="PriorityIdForFiltr"></label><br />
+                <select name="PriorityIdForFiltr" id="PriorityIdForFiltr">
+                    <option selected value="All">All</option>
+                    @foreach (var item in Model.Priorities)
+                    {
+                        <option value="@Array.IndexOf(Model.Priorities, item).ToString()">@item</option>
+                    }
+                </select>
+            </div>
+            <div class="col-12 pt-2">
+                <button type="submit" class="btn btn-primary">Фильтр</button>
+            </div>
+        </form>
+        <div>
+            <h2>Сортировка</h2>
+            <ul class="pl-0">
+                <li style="list-style-type:none">
+                    <a asp-action="Index" asp-route-SortOrder="@ViewBag.NameSort">По названию</a>
+                </li>
+                <li style="list-style-type:none">
+                    <a asp-action="Index" asp-route-SortOrder="@ViewBag.DateStart">По дате начала</a>
+                </li>
+                <li style="list-style-type:none">
+                    <a asp-action="Index" asp-route-SortOrder="@ViewBag.PriorityId">По приоритету</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+
+<form id="AddForm" class="pb-5">
+    <h3>Форма добавления нового проекта</h3>
+    <div>
+        <label asp-for="Name"></label><br />
+        <input asp-for="Name" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div>
+        <label asp-for="CustomerCompanyName"></label><br />
+        <input asp-for="CustomerCompanyName" />
+        <span asp-validation-for="CustomerCompanyName" class="text-danger"></span>
+    </div>
+    <div>
+        <label asp-for="ExecutorCompanyName"></label><br />
+        <input asp-for="ExecutorCompanyName" />
+        <span asp-validation-for="ExecutorCompanyName" class="text-danger"></span>
+    </div>
+    <div>
+        <label asp-for="ProjectManagerId"></label><br />
+        <select asp-for="ProjectManagerId" class="selectpicker" data-live-search="true">
+            <option value="0" selected>Ничего не выбрано</option>
+            @foreach (var item in Model.Employees)
+            {
+                <option data-tokens="@string.Join(" ", item.SurName, item.FirstName, item.PatronymicName)" value="@item.Id">@string.Join(" ", item.SurName, item.FirstName, item.PatronymicName)</option>
+            }
+        </select>
+    </div>
+    <div>
+        <label asp-for="PriorityId"></label><br />
+        <select asp-for="PriorityId">
+            @foreach (var item in Model.Priorities)
+            {
+                <option value="@Array.IndexOf(Model.Priorities, item)">@item</option>
+            }
+        </select>
+    </div>
+    <div>
+        <label asp-for="DateStart"></label><br />
+        <input asp-for="DateStart" required />
+        <span asp-validation-for="DateStart" class="text-danger"></span>
+    </div>
+    <div>
+        <label asp-for="DateEnd"></label><br />
+        <input asp-for="DateEnd" required />
+        <span asp-validation-for="DateEnd" class="text-danger"></span>
+    </div>
+    <div>
+        <input type="submit" class="project_send btn btn-primary" value="Добавить" />
+    </div>
+</form>
+
+
+@section Scripts{
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    <script>
+
+            $('#AddForm').submit(function (e) {
+                e.preventDefault();
+                var form = $('#AddForm')[0];
+                var formData = new FormData(form);
+                console.log(formData)
+                $.ajax({
+                    url: 'Project/Add',
+                    type: 'POST',
+                    processData: false,
+                    contentType: false,
+                    data: formData,
+                    success: function (response) {
+                        console.log(response.success);
+                        if (response.success) {
+                            console.log(response.projectJS);
+                            let a = '<a class="card href_card" id="a_' + response.projectJS.id + '" style="display: block; text-decoration: none;" href="/Project/Details/' + response.projectJS.id + '">' +
+                                '<div class="card-body text-primary">' +
+                                '<h5 class="card-title text-center" style="color: black;">' + response.projectJS.name + '</h5>' +
+                                '<input type="button" class="project_remove btn btn-danger" onclick="remove(' + response.projectJS.id + ')" value="Удалить"/>' +
+                                '</div></a>';
+                            $('#projects h2').hide()
+                            $('#projects').prepend(a)
+                        }
+                    }
+                })
+            })
+
+
+
+            function remove(id) {
+                event.preventDefault();
+                var parent = document.querySelector('#a_' + id + '')
+                parent.remove();
+                $.ajax(
+                    {
+                        url: '@Url.Action("Remove", "Project")',
+                        type: 'POST',
+                        data: { 'id': id }
+                    }
+                )
+            }
+
+    </script>
+}
+
