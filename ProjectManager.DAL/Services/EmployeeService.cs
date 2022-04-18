@@ -25,6 +25,8 @@ namespace ProjectManager.DAL.Services
             .Include(ep => ep.EmployeeProjects)
             .ThenInclude(p => p.Project)
             .Include(ps => ps.Projects)
+            .Include(ct => ct.CreatedTasks)
+            .Include(et => et.ExecutedTasks)
             .FirstOrDefault(e => e.Id == id);
 
         public void AddEmployeeToProject(Employee employee, Project project)
@@ -111,7 +113,8 @@ namespace ProjectManager.DAL.Services
                 Employee = employee,
                 PinnedProjects = projects,
                 ManagedProjects = employee.Projects.ToList(),
-                FreeProjects = freeProjects
+                FreeProjects = freeProjects,
+                CreatedTasks = employee.CreatedTasks.ToList()
             };
             return detailsEmployeeView;
         }

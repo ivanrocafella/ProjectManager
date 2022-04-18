@@ -52,6 +52,17 @@
         </a>
     }
 </div>
+<h2>Закрепленные задачи в качестве создателя</h2>
+<div class="card-column">
+    @foreach (var item in Model.CreatedTasks)
+    {
+        <a class="card href_card" id="a_@item.Id" style="display: block; text-decoration: none;" asp-controller="Task" asp-action="Details" asp-route-id="@item.Id">
+            <div class="card-body text-primary">
+                <h5 class="card-title text-center" style="color: black;">@item.Name</h5>
+            </div>
+        </a>
+    }
+</div>
 <h2>Незакрепленные проекты</h2>
 <form class="pb-5" action="/Employee/Details" method="post">
     <div class="form-group">

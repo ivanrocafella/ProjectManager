@@ -12,6 +12,8 @@ namespace ProjectManager.Core.Entities
         {
             EmployeeProjects = new HashSet<EmployeeProject>();
             Projects = new HashSet<Project>();
+            CreatedTasks = new HashSet<Task>();
+            ExecutedTasks = new HashSet<Task>();
         }
 
         public string FirstName { get; set; }
@@ -21,6 +23,7 @@ namespace ProjectManager.Core.Entities
 
         public virtual ICollection<EmployeeProject> EmployeeProjects { get; set; }
         public virtual ICollection<Project> Projects { get; set; }
-
+        public virtual ICollection<Task> CreatedTasks { get; set; }
+        public virtual ICollection<Task> ExecutedTasks { get; set; }
     }
 }

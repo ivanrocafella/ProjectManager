@@ -34,6 +34,7 @@ namespace ProjectManager.UI
             services.AddDataBase(ApplicationDbContextFactory);
             services.AddTransient<ProjectService>();
             services.AddTransient<EmployeeService>();
+            services.AddTransient<TaskService>();
             services.AddRazorPages();
         }
 

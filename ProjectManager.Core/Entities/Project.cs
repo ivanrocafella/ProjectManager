@@ -13,6 +13,7 @@ namespace ProjectManager.Core.Entities
         public Project()
         {
             EmployeeProjects = new HashSet<EmployeeProject>();
+            Tasks = new HashSet<Task>();
         }
 
         public string Name { get; set; }
@@ -34,5 +35,6 @@ namespace ProjectManager.Core.Entities
 
         public virtual Employee ProjectManager { get; set; }
         public virtual ICollection<EmployeeProject> EmployeeProjects { get; set; }
+        public virtual ICollection<Task> Tasks { get; set; }
     }
 }
