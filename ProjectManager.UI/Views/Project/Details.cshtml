@@ -55,6 +55,26 @@
         </a>
     }
 </div>
+<h2>Задачи</h2>
+<div class="card-column" id="tasks">
+    @if (Model.Project.Tasks.Count == 0)
+    {
+        <h2>Задач ещё нет</h2>
+    }
+    else
+    {
+        foreach (var item in Model.Project.Tasks)
+        {
+            <a class="card href_card" id="a_@item.Id" style="display: block; text-decoration: none;" asp-controller="Task" asp-action="Details" asp-route-id="@item.Id">
+                <div class="card-body text-primary">
+                    <h5 class="card-title text-center" style="color: black;">@item.Name</h5>
+                    <input type="button" class="task_remove btn btn-danger" onclick="removeTask('@item.Id')" value="Удалить" />
+                </div>
+            </a>
+        }
+    }
+</div>
+
 <h2>Свободные сотрудники</h2>
 <form class="pb-5" action="/Project/Details" method="post">
     <div class="form-group">
@@ -74,9 +94,59 @@
 
 
 
+<form id="AddForm" class="pb-5">
+    <h3>Форма добавления новой задачи</h3>
+    <div>
+        <label asp-for="Name"></label><br />
+        <input asp-for="Name" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div>
+        <label asp-for="AutorId"></label><br />
+        <select asp-for="AutorId" class="selectpicker" data-live-search="true">
+            <option value="0" selected>Ничего не выбрано</option>
+            @foreach (var item in Model.ExecutorsAndProjectManager)
+            {
+                <option data-tokens="@string.Join(" ", item.SurName, item.FirstName, item.PatronymicName)" value="@item.Id">@string.Join(" ", item.SurName, item.FirstName, item.PatronymicName)</option>
+            }
+        </select>
+        <span asp-validation-for="AutorId" class="text-danger"></span>
+    </div>
+    <div>
+        <label asp-for="ExecutorId"></label><br />
+        <select asp-for="ExecutorId" class="selectpicker" data-live-search="true">
+            <option value="0" selected>Ничего не выбрано</option>
+            @foreach (var item in Model.Executors)
+            {
+                <option data-tokens="@string.Join(" ", item.SurName, item.FirstName, item.PatronymicName)" value="@item.Id">@string.Join(" ", item.SurName, item.FirstName, item.PatronymicName)</option>
+            }
+        </select>
+    </div>
+    <div>
+        <label asp-for="PriorityId"></label><br />
+        <select asp-for="PriorityId">
+            @foreach (var item in Model.Priorities)
+            {
+                <option value="@Array.IndexOf(Model.Priorities, item)">@item</option>
+            }
+        </select>
+    </div>
+    <div>
+        <label asp-for="Comment"></label><br />
+        <textarea asp-for="Comment"></textarea>
+    </div>
+    <input asp-for="@Model.Project.Id" type="hidden" value="@Model.Project.Id">
+    <div>
+        <input type="submit" class="project_send btn btn-primary" value="Добавить" />
+    </div>
+</form>
+
+
 @section Scripts
 {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
     <script>
+
         function removeFromProject(projectId, employeeId) {
             event.preventDefault();
             var parent = document.querySelector('#a_' + employeeId + '')
@@ -107,5 +177,32 @@
             )
             parent.remove();
         }
+
+        $('#AddForm').submit(function (e) {
+            e.preventDefault();
+            var form = $('#AddForm')[0];
+            var formData = new FormData(form);
+            console.log(formData)
+            $.ajax({
+                url: '@Url.Action("Add","Task")',
+                type: 'POST',
+                processData: false,
+                contentType: false,
+                data: formData,
+                success: function (response) {
+                    console.log(response.success);
+                    if (response.success) {
+                        console.log(response.taskJS);
+                        let a = '<a class="card href_card" id="a_' + response.taskJS.id + '" style="display: block; text-decoration: none;" href="/Task/Details/' + response.taskJS.id + '">' +
+                            '<div class="card-body text-primary">' +
+                            '<h5 class="card-title text-center" style="color: black;">' + response.taskJS.name + '</h5>' +
+                            '<input type="button" class="task_remove btn btn-danger" onclick="removeTask(' + response.taskJS.id + ')" value="Удалить"/>' +
+                            '</div></a>';
+                        $('#tasks h2').hide()
+                        $('#tasks').prepend(a)
+                    }
+                }
+            })
+        })
     </script>
 }

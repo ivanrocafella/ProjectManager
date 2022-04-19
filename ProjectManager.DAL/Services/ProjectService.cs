@@ -40,6 +40,7 @@ namespace ProjectManager.DAL.Services
             .Include(ep => ep.EmployeeProjects)
             .ThenInclude(e => e.Employee)
             .Include(e => e.ProjectManager)
+            .Include(t => t.Tasks)
             .FirstOrDefault(e => e.Id == id);
 
         public DetailsProjectViewModel GetDetailsProjectViewModel(Project project)
@@ -52,11 +53,16 @@ namespace ProjectManager.DAL.Services
                 .AsEnumerable()
                 .Except(executors)
                 .ToList();
+            List<Employee> ExecutorsAndProjectManager = new();
+            ExecutorsAndProjectManager.AddRange(executors);
+            ExecutorsAndProjectManager.Add(project.ProjectManager);
             DetailsProjectViewModel detailsProjectView = new()
             {
                 Project = project,
                 Executors = executors,
-                FreeEmployees = freeEmployess
+                FreeEmployees = freeEmployess,
+                ExecutorsAndProjectManager = ExecutorsAndProjectManager,
+                Priorities = Enum.GetValues(typeof(Priority))
             };
             return detailsProjectView;
         }

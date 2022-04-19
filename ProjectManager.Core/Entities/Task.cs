@@ -37,6 +37,11 @@ namespace ProjectManager.Core.Entities
         public Status Status { get; set; }
         public int ProjectId { get; set; }
         public virtual Project Project { get; set; }
+
+        public Task()
+        {
+            StatusId = 0;
+        }
     }
 }
     
