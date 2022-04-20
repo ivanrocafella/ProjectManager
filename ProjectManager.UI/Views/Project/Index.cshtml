@@ -148,10 +148,10 @@
                     success: function (response) {
                         console.log(response.success);
                         if (response.success) {
-                            let a = '<a class="card href_card" id="a_' + response.idProjectJS + '" style="display: block; text-decoration: none;" href="/Project/Details/' + response.projectJS.id + '">' +
+                            let a = '<a class="card href_card" id="a_' + response.projectJS.id + '" style="display: block; text-decoration: none;" href="/Project/Details/' + response.projectJS.id + '">' +
                                 '<div class="card-body text-primary">' +
-                                '<h5 class="card-title text-center" style="color: black;">' + response.nameProjectJS + '</h5>' +
-                                '<input type="button" class="project_remove btn btn-danger" onclick="remove(' + response.idProjectJS + ')" value="Удалить"/>' +
+                                '<h5 class="card-title text-center" style="color: black;">' + response.projectJS.name + '</h5>' +
+                                '<input type="button" class="project_remove btn btn-danger" onclick="remove(' + response.projectJS.id + ')" value="Удалить"/>' +
                                 '</div></a>';
                             $('#projects h2').hide()
                             $('#projects').prepend(a)

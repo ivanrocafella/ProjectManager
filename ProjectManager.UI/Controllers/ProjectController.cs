@@ -67,7 +67,8 @@ namespace ProjectManager.UI.Controllers
                 Project project = _PService.AddProject(viewModel);
                 if (project.ProjectManagerId != null)
                     _EService.AddEmployeeToProject((int)project.ProjectManagerId, project.Id);
-                return Json(new { success = true, nameProjectJS = project.Name, idProjectJS = project.Id });
+                project.EmployeeProjects.Clear();
+                return Json(new { success = true, projectJS = project});
             }
             return Json(new { succes = false });
         }
