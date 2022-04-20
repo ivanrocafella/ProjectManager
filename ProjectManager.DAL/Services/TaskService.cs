@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ProjectManager.Core;
 using ProjectManager.Core.Entities;
+using ProjectManager.Core.Entities.Enums;
+using ProjectManager.Core.Repositories;
 using ProjectManager.DAL.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -32,7 +34,7 @@ namespace ProjectManager.DAL.Services
             };
             if (viewModel.ExecutorId != 0)
                 task.ExecutorId = viewModel.ExecutorId;
-            _unitOfWork.GetRepository<Core.Entities.Task>().Add(task);
+            _unitOfWork.GetRepository<Task>().Add(task);
             _unitOfWork.Complete();
             return task;
         }
@@ -43,5 +45,38 @@ namespace ProjectManager.DAL.Services
         .Include(e => e.Executor)
         .Include(t => t.Project)
         .FirstOrDefault(e => e.Id == id);
+
+        public EditTaskViewModel GetEditTaskViewModel(Task task)
+        {
+            EditTaskViewModel editTaskView = new()
+            {
+                Id = task.Id,
+                Name = task.Name,
+                ExecutorId = task.ExecutorId,
+                Executor = task.Executor,
+                PriorityId = task.PriorityId,
+                StatusId = task.StatusId,
+                Comment = task.Comment, 
+                Priorities = Enum.GetValues(typeof(Priority)),
+                Statuses = Enum.GetValues(typeof(Status)),
+            };
+            return editTaskView;
+        }
+
+        public void EditTask(EditTaskViewModel viewModel)
+        {
+            IRepository<Task> repository = _unitOfWork.GetRepository<Task>();
+            Task taskForEdit = repository.GetById(viewModel.Id);
+            taskForEdit.Name = viewModel.Name;
+            if (viewModel.ExecutorId > 0)
+                taskForEdit.ExecutorId = viewModel.ExecutorId;
+            else if (viewModel.ExecutorId == 0 && taskForEdit.ExecutorId != null)
+                taskForEdit.ExecutorId = null;           
+            taskForEdit.PriorityId = viewModel.PriorityId;
+            taskForEdit.StatusId = viewModel.StatusId;
+            taskForEdit.Comment = viewModel.Comment;
+            repository.Update(taskForEdit);
+            _unitOfWork.Complete();
+        }
     }
 }

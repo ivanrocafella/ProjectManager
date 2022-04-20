@@ -1,0 +1,66 @@
+﻿@using ProjectManager.DAL.ViewModels
+@model EditTaskViewModel
+
+<head>
+    <base target="_top">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+</head>
+
+<form id="EditForm" class="pb-5" action="/Task/Edit" method="post">
+    <h3>Форма редактирования задачи</h3>
+    <div>
+        <label asp-for="Name"></label><br />
+        <input asp-for="Name" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div>
+        <label asp-for="ExecutorId"></label><br />
+        <select asp-for="ExecutorId" class="selectpicker" data-live-search="true">
+            @if (Model.ExecutorId != null)
+            {
+                <option value=@Model.ExecutorId selected>@string.Join(" ", Model.Executor.SurName, Model.Executor.FirstName, Model.Executor.PatronymicName)</option>
+            }
+            <option value="0">Ничего не выбрано</option>
+            @foreach (var item in Model.Executors)
+            {
+                <option data-tokens="@string.Join(" ", item.SurName, item.FirstName, item.PatronymicName)" value="@item.Id">@string.Join(" ", item.SurName, item.FirstName, item.PatronymicName)</option>
+            }
+        </select>
+    </div>
+    <div>
+        <label asp-for="PriorityId"></label><br />
+        <select asp-for="PriorityId">
+            @foreach (var item in Model.Priorities)
+            {
+                <option value="@Array.IndexOf(Model.Priorities, item)">@item</option>
+            }
+        </select>
+    </div>
+    <div>
+        <label asp-for="StatusId"></label><br />
+        <select asp-for="StatusId">
+            @foreach (var item in Model.Statuses)
+            {
+                <option value="@Array.IndexOf(Model.Statuses, item)">@item</option>
+            }
+        </select>
+    </div>
+    <div>
+        <label asp-for="Comment"></label><br />
+        <textarea asp-for="Comment"></textarea>
+    </div>
+    <input asp-for="@Model.Id" type="hidden" value="@Model.Id">
+    <div>
+        <input type="submit" class="project_send btn btn-primary" value="Редактировать" />
+    </div>
+</form>
+
+@section Scripts{
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}
+

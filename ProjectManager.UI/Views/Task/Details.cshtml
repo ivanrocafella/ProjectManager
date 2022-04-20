@@ -9,7 +9,10 @@
                 <p class="card-text">
                     <span>Название проекта: @Model.Project.Name</span>
                     <br /><span>Автор задачи: @string.Join(" ", Model.Autor.SurName, Model.Autor.FirstName, Model.Autor.PatronymicName)</span>
-                    <br /><span>Исполнитель задачи: @string.Join(" ", Model.Executor.SurName, Model.Executor.FirstName, Model.Executor.PatronymicName)</span>
+                    @if (Model.Executor != null)
+                    {
+                        <br /><span>Исполнитель задачи: @string.Join(" ", Model.Executor.SurName, Model.Executor.FirstName, Model.Executor.PatronymicName)</span>
+                    }
                     <br /><span>Статус задачи: @Model.Status</span>
                     <br /><span>Приоритет задачи: @Model.Priority</span>
                     <br /><span>Комментарий: @Model.Comment</span>

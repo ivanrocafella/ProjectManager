@@ -43,5 +43,28 @@ namespace ProjectManager.UI.Controllers
             else
                 return View(task);
         }
+
+        public IActionResult Edit(int id)
+        {
+            Task task = _TService.GetTask(id);
+            if (task == null)
+                return NoContent();
+            else
+            {
+                EditTaskViewModel editTaskView = _TService.GetEditTaskViewModel(task);
+                Project project = _PService.GetProject(task.ProjectId);
+                editTaskView.Executors = project.EmployeeProjects
+                                                .Select(e => e.Employee)
+                                                .ToList();
+                return View(editTaskView);
+            }
+        }
+
+        [HttpPost]
+        public IActionResult Edit(EditTaskViewModel viewModel)
+        {
+            _TService.EditTask(viewModel);
+            return RedirectToAction("Details", new { id = viewModel.Id });
+        }
     }
 }
