@@ -22,6 +22,11 @@ namespace ProjectManager.DAL.Services
             _unitOfWork = unitOfWork;
         }
 
+        public List<Task> GetTasksByProjectIdEmployeeId(int projectId, int employeeId) =>
+            _unitOfWork.GetRepository<Task>()
+            .Find(e => e.ProjectId == projectId && e.ExecutorId == employeeId)
+            .ToList();
+
         public Task AddTask(DetailsProjectViewModel viewModel)
         {
             Task task = new()
@@ -76,6 +81,20 @@ namespace ProjectManager.DAL.Services
             taskForEdit.StatusId = viewModel.StatusId;
             taskForEdit.Comment = viewModel.Comment;
             repository.Update(taskForEdit);
+            _unitOfWork.Complete();
+        }
+
+        public void RemoveFromTask(Task task)
+        {
+            IRepository<Task> repository = _unitOfWork.GetRepository<Task>();
+            task.ExecutorId = null;
+            repository.Update(task);
+            _unitOfWork.Complete();
+        }
+
+        public void Remove(int id)
+        {
+            _unitOfWork.GetRepository<Task>().Remove(id);
             _unitOfWork.Complete();
         }
     }

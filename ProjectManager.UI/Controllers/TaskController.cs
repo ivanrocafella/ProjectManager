@@ -66,5 +66,12 @@ namespace ProjectManager.UI.Controllers
             _TService.EditTask(viewModel);
             return RedirectToAction("Details", new { id = viewModel.Id });
         }
+
+        [HttpPost]
+        public IActionResult Remove(int id)
+        {
+            _TService.Remove(id);
+            return Ok();
+        }
     }
 }

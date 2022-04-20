@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Task = ProjectManager.Core.Entities.Task;
 
 namespace ProjectManager.UI.Controllers
 {
@@ -14,11 +15,13 @@ namespace ProjectManager.UI.Controllers
     {
         private readonly ProjectService _PService;
         private readonly EmployeeService _EService;
+        private readonly TaskService _TService;
 
-        public ProjectController(ProjectService pService, EmployeeService eService)
+        public ProjectController(ProjectService pService, EmployeeService eService, TaskService tService)
         {
             _PService = pService;
             _EService = eService;
+            _TService = tService;
         }
 
         public IActionResult Index(DateTime DateStartFrom, DateTime DateStartBefore,
@@ -80,6 +83,9 @@ namespace ProjectManager.UI.Controllers
         [HttpPost]
         public IActionResult RemoveFromProject(int projectId, int employeeId)
         {
+            List<Task> tasks = _TService.GetTasksByProjectIdEmployeeId(projectId, employeeId);
+            foreach (var item in tasks)
+                _TService.RemoveFromTask(item);
             _PService.RemoveFromProject(projectId, employeeId);
             return Ok();
         }

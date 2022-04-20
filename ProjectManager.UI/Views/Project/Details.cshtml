@@ -65,10 +65,10 @@
     {
         foreach (var item in Model.Project.Tasks)
         {
-            <a class="card href_card" id="a_@item.Id" style="display: block; text-decoration: none;" asp-controller="Task" asp-action="Details" asp-route-id="@item.Id">
+            <a class="card href_card" id="a_task_@item.Id" style="display: block; text-decoration: none;" asp-controller="Task" asp-action="Details" asp-route-id="@item.Id">
                 <div class="card-body text-primary">
                     <h5 class="card-title text-center" style="color: black;">@item.Name</h5>
-                    <input type="button" class="task_remove btn btn-danger" onclick="removeTask('@item.Id')" value="Удалить" />
+                    <input type="button" class="task_remove btn btn-danger" onclick="remove('@item.Id')" value="Удалить" />
                 </div>
             </a>
         }
@@ -145,7 +145,7 @@
 @section Scripts
 {
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
-    <script>
+<script>
 
         function removeFromProject(projectId, employeeId) {
             event.preventDefault();
@@ -193,10 +193,10 @@
                     console.log(response.success);
                     if (response.success) {
                         console.log(response.taskJS);
-                        let a = '<a class="card href_card" id="a_' + response.taskJS.id + '" style="display: block; text-decoration: none;" href="/Task/Details/' + response.taskJS.id + '">' +
+                        let a = '<a class="card href_card" id="a_task_' + response.taskJS.id + '" style="display: block; text-decoration: none;" href="/Task/Details/' + response.taskJS.id + '">' +
                             '<div class="card-body text-primary">' +
                             '<h5 class="card-title text-center" style="color: black;">' + response.taskJS.name + '</h5>' +
-                            '<input type="button" class="task_remove btn btn-danger" onclick="removeTask(' + response.taskJS.id + ')" value="Удалить"/>' +
+                            '<input type="button" class="task_remove btn btn-danger" onclick="remove(' + response.taskJS.id + ')" value="Удалить"/>' +
                             '</div></a>';
                         $('#tasks h2').hide()
                         $('#tasks').prepend(a)
@@ -204,5 +204,18 @@
                 }
             })
         })
-    </script>
+
+            function remove(id) {
+                event.preventDefault();
+                var parent = document.querySelector('#a_task_' + id + '')
+                parent.remove();
+                $.ajax(
+                    {
+                        url: '@Url.Action("Remove", "Task")',
+                        type: 'POST',
+                        data: { 'id': id }
+                    }
+                )
+            }
+</script>
 }
