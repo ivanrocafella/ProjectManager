@@ -58,10 +58,7 @@ namespace ProjectManager.UI.Controllers
         [HttpPost]
         public IActionResult Details(int employeeId, int projectId)
         {
-            Employee employee = _EService.GetEmployee(employeeId);
-            Project project = _PService.GetProject(projectId);
-            if (employee != null)
-                _EService.AddEmployeeToProject(employee, project);
+            _EService.AddEmployeeToProject(employeeId, projectId);
             return RedirectToAction("Details", "Employee", new { id = employeeId });
         }
 

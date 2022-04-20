@@ -56,6 +56,8 @@ namespace ProjectManager.UI.Controllers
                 editTaskView.Executors = project.EmployeeProjects
                                                 .Select(e => e.Employee)
                                                 .ToList();
+                if (task.ExecutorId != null)
+                    editTaskView.Executors.Remove(task.Executor);
                 return View(editTaskView);
             }
         }

@@ -55,10 +55,7 @@ namespace ProjectManager.UI.Controllers
         [HttpPost]
         public IActionResult Details(int employeeId, int projectId)
         {
-            Employee employee = _EService.GetEmployee(employeeId);
-            Project project = _PService.GetProject(projectId);
-            if (employee != null)
-                _EService.AddEmployeeToProject(employee, project);
+            _EService.AddEmployeeToProject(employeeId, projectId);
             return RedirectToAction("Details", "Project", new { id = projectId });
         }
 
@@ -68,7 +65,9 @@ namespace ProjectManager.UI.Controllers
             if (ModelState.IsValid)
             {
                 Project project = _PService.AddProject(viewModel);
-                return Json(new { success = true, projectJS = project });
+                if (project.ProjectManagerId != null)
+                    _EService.AddEmployeeToProject((int)project.ProjectManagerId, project.Id);
+                return Json(new { success = true, nameProjectJS = project.Name, idProjectJS = project.Id });
             }
             return Json(new { succes = false });
         }

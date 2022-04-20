@@ -14,7 +14,6 @@ namespace ProjectManager.DAL.ViewModels
         public List<Employee> Executors { get; set; }
         public List<Employee> FreeEmployees { get; set; }
         public Array Priorities { get; set; }
-        public List<Employee> ExecutorsAndProjectManager { get; set; }
 
         [Required(ErrorMessage = "Название задачи обязательно для заполнения")]
         [Display(Name = "Название задачи")]

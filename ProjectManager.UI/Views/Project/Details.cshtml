@@ -105,7 +105,7 @@
         <label asp-for="AutorId"></label><br />
         <select asp-for="AutorId" class="selectpicker" data-live-search="true">
             <option value="0" selected>Ничего не выбрано</option>
-            @foreach (var item in Model.ExecutorsAndProjectManager)
+            @foreach (var item in Model.Executors)
             {
                 <option data-tokens="@string.Join(" ", item.SurName, item.FirstName, item.PatronymicName)" value="@item.Id">@string.Join(" ", item.SurName, item.FirstName, item.PatronymicName)</option>
             }

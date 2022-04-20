@@ -53,16 +53,11 @@ namespace ProjectManager.DAL.Services
                 .AsEnumerable()
                 .Except(executors)
                 .ToList();
-            List<Employee> ExecutorsAndProjectManager = new();
-            ExecutorsAndProjectManager.AddRange(executors);
-            if (project.ProjectManager != null)
-                ExecutorsAndProjectManager.Add(project.ProjectManager);
             DetailsProjectViewModel detailsProjectView = new()
             {
                 Project = project,
                 Executors = executors,
                 FreeEmployees = freeEmployess,
-                ExecutorsAndProjectManager = ExecutorsAndProjectManager,
                 Priorities = Enum.GetValues(typeof(Priority))
             };
             return detailsProjectView;
@@ -98,7 +93,7 @@ namespace ProjectManager.DAL.Services
                 DateEnd = viewModel.DateEnd
             };
             if (viewModel.ProjectManagerId != 0)
-                project.ProjectManagerId = viewModel.ProjectManagerId;
+                project.ProjectManagerId = viewModel.ProjectManagerId;             
             _unitOfWork.GetRepository<Project>().Add(project);
             _unitOfWork.Complete();
             return project;

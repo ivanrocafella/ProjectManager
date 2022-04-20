@@ -132,7 +132,7 @@
 
 @section Scripts{
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
-    <script>
+<script>
 
             $('#AddForm').submit(function (e) {
                 e.preventDefault();
@@ -140,7 +140,7 @@
                 var formData = new FormData(form);
                 console.log(formData)
                 $.ajax({
-                    url: 'Project/Add',
+                    url: '@Url.Action("Add", "Project")',
                     type: 'POST',
                     processData: false,
                     contentType: false,
@@ -148,11 +148,10 @@
                     success: function (response) {
                         console.log(response.success);
                         if (response.success) {
-                            console.log(response.projectJS);
-                            let a = '<a class="card href_card" id="a_' + response.projectJS.id + '" style="display: block; text-decoration: none;" href="/Project/Details/' + response.projectJS.id + '">' +
+                            let a = '<a class="card href_card" id="a_' + response.idProjectJS + '" style="display: block; text-decoration: none;" href="/Project/Details/' + response.projectJS.id + '">' +
                                 '<div class="card-body text-primary">' +
-                                '<h5 class="card-title text-center" style="color: black;">' + response.projectJS.name + '</h5>' +
-                                '<input type="button" class="project_remove btn btn-danger" onclick="remove(' + response.projectJS.id + ')" value="Удалить"/>' +
+                                '<h5 class="card-title text-center" style="color: black;">' + response.nameProjectJS + '</h5>' +
+                                '<input type="button" class="project_remove btn btn-danger" onclick="remove(' + response.idProjectJS + ')" value="Удалить"/>' +
                                 '</div></a>';
                             $('#projects h2').hide()
                             $('#projects').prepend(a)
@@ -176,6 +175,6 @@
                 )
             }
 
-    </script>
+</script>
 }
 

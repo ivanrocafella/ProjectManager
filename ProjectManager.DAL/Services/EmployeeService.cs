@@ -29,12 +29,12 @@ namespace ProjectManager.DAL.Services
             .Include(et => et.ExecutedTasks)
             .FirstOrDefault(e => e.Id == id);
 
-        public void AddEmployeeToProject(Employee employee, Project project)
+        public void AddEmployeeToProject(int employeeId, int projectId)
         {
             EmployeeProject employeeProject = new()
             {
-                EmployeeId = employee.Id,
-                ProjectId = project.Id,
+                EmployeeId = employeeId,
+                ProjectId = projectId,
                 CreatedAd = DateTime.Now
             };
             _unitOfWork.GetRepository<EmployeeProject>().Add(employeeProject);
