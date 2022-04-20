@@ -1,0 +1,23 @@
+﻿@using Task = ProjectManager.Core.Entities.Task
+@model Task
+
+<div class="card mb-4 py-3 mt-2">
+    <div class="card-body py-0 row justify-content-lg-between">
+        <div class="row justify-content-lg-start justify-content-md-between justify-content-lg-between col col-lg-7">
+            <div class="col-lg-8 col-md-7 p-0">
+                <h5 class="category-header font-weight-bold">@Model.Name</h5>
+                <p class="card-text">
+                    <span>Название проекта: @Model.Project.Name</span>
+                    <br /><span>Автор задачи: @string.Join(" ", Model.Autor.SurName, Model.Autor.FirstName, Model.Autor.PatronymicName)</span>
+                    <br /><span>Исполнитель задачи: @string.Join(" ", Model.Executor.SurName, Model.Executor.FirstName, Model.Executor.PatronymicName)</span>
+                    <br /><span>Статус задачи: @Model.Status</span>
+                    <br /><span>Приоритет задачи: @Model.Priority</span>
+                    <br /><span>Комментарий: @Model.Comment</span>
+                </p>
+            </div>
+        </div>
+        <div class="row col col-lg-3 p-0">
+            <a asp-action="Edit" asp-controller="Task" asp-route-id="@Model.Id" class="btn btn-light float-right col col-sm-12">Редактировать</a>
+        </div>
+    </div>
+</div>

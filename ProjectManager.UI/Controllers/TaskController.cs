@@ -24,11 +24,6 @@ namespace ProjectManager.UI.Controllers
             _TService = tService;
         }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
-
         [HttpPost]
         public JsonResult Add(DetailsProjectViewModel viewModel)
         {
@@ -38,6 +33,15 @@ namespace ProjectManager.UI.Controllers
                 return Json(new { success = true, taskJS = task });
             }
             return Json(new { succes = false });
+        }
+
+        public IActionResult Details(int id)
+        {
+            Task task = _TService.GetTask(id);
+            if (task == null)
+                return NoContent();
+            else
+                return View(task);
         }
     }
 }

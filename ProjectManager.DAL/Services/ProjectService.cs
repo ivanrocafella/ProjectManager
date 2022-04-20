@@ -55,7 +55,8 @@ namespace ProjectManager.DAL.Services
                 .ToList();
             List<Employee> ExecutorsAndProjectManager = new();
             ExecutorsAndProjectManager.AddRange(executors);
-            ExecutorsAndProjectManager.Add(project.ProjectManager);
+            if (project.ProjectManager != null)
+                ExecutorsAndProjectManager.Add(project.ProjectManager);
             DetailsProjectViewModel detailsProjectView = new()
             {
                 Project = project,

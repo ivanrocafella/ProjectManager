@@ -1,4 +1,5 @@
-﻿using ProjectManager.Core;
+﻿using Microsoft.EntityFrameworkCore;
+using ProjectManager.Core;
 using ProjectManager.Core.Entities;
 using ProjectManager.DAL.ViewModels;
 using System;
@@ -35,5 +36,12 @@ namespace ProjectManager.DAL.Services
             _unitOfWork.Complete();
             return task;
         }
+
+        public Task GetTask(int id) => _unitOfWork.GetRepository<Task>()
+        .GetAll()
+        .Include(a => a.Autor)
+        .Include(e => e.Executor)
+        .Include(t => t.Project)
+        .FirstOrDefault(e => e.Id == id);
     }
 }
