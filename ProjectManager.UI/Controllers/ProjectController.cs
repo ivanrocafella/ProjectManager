@@ -39,14 +39,21 @@ namespace ProjectManager.UI.Controllers
             return View(projectsAndProject);
         }
 
-        public IActionResult Details(int id)
+        public IActionResult Details(int id, string Name, 
+                                     string StatusIdForFiltr, SortState SortOrder = SortState.NameAsc)
         {
+            ViewBag.NameSort = SortOrder == SortState.NameAsc ? SortState.NameDesc : SortState.NameAsc;
+            ViewBag.PriorityId = SortOrder == SortState.PriorityIdAsc ? SortState.PriorityIdDesc : SortState.PriorityIdAsc;
+            ViewBag.StatuId = SortOrder == SortState.StatusIdAsc ? SortState.StatusIdDesc : SortState.StatusIdAsc;
+
             Project project = _PService.GetProject(id);
             if (project == null)
                 return NoContent();
             else
             {
-                DetailsProjectViewModel detailsProjectView = _PService.GetDetailsProjectViewModel(project);
+                IQueryable<Task> tasks = _TService.QueryableTasksOfProjectAfterFilter(Name, StatusIdForFiltr, project.Id);
+                DetailsProjectViewModel detailsProjectView = _PService.GetDetailsProjectViewModel(project,
+                                                             _TService.QueryableTasksAfterSort(tasks, SortOrder));
                 return View(detailsProjectView);
             }
 

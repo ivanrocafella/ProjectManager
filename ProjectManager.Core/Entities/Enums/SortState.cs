@@ -13,6 +13,8 @@ namespace ProjectManager.Core.Entities.Enums
         DateStartAsc,
         DateStartDesc,
         PriorityIdAsc,
-        PriorityIdDesc
+        PriorityIdDesc,
+        StatusIdAsc,
+        StatusIdDesc
     }
 }

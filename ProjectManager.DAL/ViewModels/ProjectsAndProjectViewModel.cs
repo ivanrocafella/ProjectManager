@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Mvc;
 
 namespace ProjectManager.DAL.ViewModels
 {
@@ -30,11 +31,8 @@ namespace ProjectManager.DAL.ViewModels
         public int PriorityId { get; set; }
         [CheckDate(ErrorMessage = "Некорректо введена дата")]
         [DataType(DataType.DateTime)]
-        // [Remote("CheckDate", "Validation", ErrorMessage ="Некорректо введена дата")]
         [Display(Name = "Дата начала")]
         public DateTime DateStart { get; set; }
-        // [Required(ErrorMessage = "Дата начала обязательна для заполнения")]
-        // [Remote(action: "CheckDate", controller: "Project", ErrorMessage = "Недопустимая дата")]
         [Display(Name = "Дата завершения")]
         [CheckDate(ErrorMessage = "Некорректо введена дата")]
         [DataType(DataType.DateTime)]

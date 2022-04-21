@@ -22,6 +22,8 @@ namespace ProjectManager.DAL.Services
             _unitOfWork = unitOfWork;
         }
 
+        public IQueryable<Task> AllTasks() => _unitOfWork.GetRepository<Task>().GetAll();
+
         public List<Task> GetTasksByProjectIdEmployeeId(int projectId, int employeeId) =>
             _unitOfWork.GetRepository<Task>()
             .Find(e => e.ProjectId == projectId && e.ExecutorId == employeeId)
@@ -96,6 +98,44 @@ namespace ProjectManager.DAL.Services
         {
             _unitOfWork.GetRepository<Task>().Remove(id);
             _unitOfWork.Complete();
+        }
+
+        public IQueryable<Task> QueryableTasksOfProjectAfterFilter(string Name, string StatusIdForFiltr, int projectId)
+        {
+            IQueryable<Task> tasks = AllTasks().Where(e => e.ProjectId == projectId).OrderBy(e => e.Name);
+            if (!string.IsNullOrEmpty(Name))
+                tasks = tasks.Where(p => p.Name.Contains(Name));
+
+            if (!string.IsNullOrEmpty(StatusIdForFiltr) && StatusIdForFiltr != "All")
+                tasks = tasks.Where(e => e.StatusId == Int32.Parse(StatusIdForFiltr));
+
+            return tasks;
+        }
+
+        public IQueryable<Task> QueryableTasksAfterSort(IQueryable<Task> tasks, SortState SortOrder)
+        {
+            switch (SortOrder)
+            {
+                case SortState.NameDesc:
+                    tasks = tasks.OrderByDescending(s => s.Name);
+                    break;
+                case SortState.PriorityIdAsc:
+                    tasks = tasks.OrderBy(s => s.PriorityId);
+                    break;
+                case SortState.PriorityIdDesc:
+                    tasks = tasks.OrderByDescending(s => s.PriorityId);
+                    break;
+                case SortState.StatusIdAsc:
+                    tasks = tasks.OrderBy(s => s.StatusId);
+                    break;
+                case SortState.StatusIdDesc:
+                    tasks = tasks.OrderByDescending(s => s.StatusId);
+                    break;
+                default:
+                    tasks = tasks.OrderBy(s => s.Name);
+                    break;
+            }
+            return tasks;
         }
     }
 }

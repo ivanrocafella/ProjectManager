@@ -55,24 +55,65 @@
         </a>
     }
 </div>
+
 <h2>Задачи</h2>
-<div class="card-column" id="tasks">
-    @if (Model.Project.Tasks.Count == 0)
-    {
-        <h2>Задач ещё нет</h2>
-    }
-    else
-    {
-        foreach (var item in Model.Project.Tasks)
-        {
-            <a class="card href_card" id="a_task_@item.Id" style="display: block; text-decoration: none;" asp-controller="Task" asp-action="Details" asp-route-id="@item.Id">
-                <div class="card-body text-primary">
-                    <h5 class="card-title text-center" style="color: black;">@item.Name</h5>
-                    <input type="button" class="task_remove btn btn-danger" onclick="remove('@item.Id')" value="Удалить" />
-                </div>
-            </a>
-        }
-    }
+<div class="row">
+    <div class="col-9">
+        <div class="card-column" id="tasks">
+            @if (Model.Project.Tasks.Count == 0)
+            {
+                <h2>Задачи ещё не добавлены</h2>
+            }
+            else
+            {
+                @foreach (var item in Model.Project.Tasks)
+                {
+                    <a class="card href_card" id="a_@item.Id" style="display: block; text-decoration: none;" asp-controller="Task" asp-action="Details" asp-route-id="@item.Id">
+                        <div class="card-body text-primary">
+                            <h5 class="card-title text-center" style="color: black;">@item.Name</h5>
+                            <input type="button" class="task_remove btn btn-danger" onclick="remove('@item.Id')" value="Удалить" />
+                        </div>
+                    </a>
+                }
+            }
+        </div>
+    </div>
+    <div class="col">
+        <h2>Фильтры</h2>
+        <form class="row pb-5" asp-controller="Project" asp-action="Details" method="get">
+            <div class="col-12">
+                <label for="Name" class="form-label">Название</label>
+                <input type="text" class="form-control" id="Name" name="Name">
+            </div>
+            <div class="col-12">
+                <label for="StatusIdForFiltr">Статус</label><br />
+                <select name="StatusIdForFiltr" id="StatusIdForFiltr">
+                    <option selected value="All">All</option>
+                    @foreach (var item in Model.Statuses)
+                    {
+                        <option value="@Array.IndexOf(Model.Statuses, item).ToString()">@item</option>
+                    }
+                </select>
+            </div>
+            <div class="col-12 pt-2">
+                <button type="submit" class="btn btn-primary">Фильтр</button>
+            </div>
+        </form>
+        <div>
+            <h2>Сортировка</h2>
+            <ul class="pl-0">
+                <li style="list-style-type:none">
+                    <a asp-action="Details" asp-route-SortOrder="@ViewBag.NameSort">По названию</a>
+                </li>
+                <li style="list-style-type:none">
+                    <a asp-action="Details" asp-route-SortOrder="@ViewBag.StatuId">По статусу</a>
+                </li>
+                <li style="list-style-type:none">
+                    <a asp-action="Details" asp-route-SortOrder="@ViewBag.PriorityId">По приоритету</a>
+                </li>
+            </ul>
+        </div>
+    </div>
 </div>
 
 <h2>Свободные сотрудники</h2>
@@ -205,17 +246,17 @@
             })
         })
 
-            function remove(id) {
-                event.preventDefault();
-                var parent = document.querySelector('#a_task_' + id + '')
-                parent.remove();
-                $.ajax(
-                    {
-                        url: '@Url.Action("Remove", "Task")',
-                        type: 'POST',
-                        data: { 'id': id }
-                    }
-                )
-            }
+        function remove(id) {
+            event.preventDefault();
+            var parent = document.querySelector('#a_task_' + id + '')
+            parent.remove();
+            $.ajax(
+                {
+                    url: '@Url.Action("Remove", "Task")',
+                    type: 'POST',
+                    data: { 'id': id }
+                }
+            )
+        }
 </script>
 }

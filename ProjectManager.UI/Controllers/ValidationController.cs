@@ -10,6 +10,6 @@ namespace ProjectManager.UI.Controllers
     {
         [AcceptVerbs("GET", "POST")]
         public IActionResult CheckDate(DateTime dateStart) => Json(dateStart >= DateTime.Now 
-            && dateStart < DateTime.MaxValue || dateStart == DateTime.MinValue);
+            && dateStart < DateTime.MaxValue);
     }
 }

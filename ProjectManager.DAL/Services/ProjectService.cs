@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Task = ProjectManager.Core.Entities.Task;
 
 namespace ProjectManager.DAL.Services
 {
@@ -40,11 +41,11 @@ namespace ProjectManager.DAL.Services
             .Include(ep => ep.EmployeeProjects)
             .ThenInclude(e => e.Employee)
             .Include(e => e.ProjectManager)
-            .Include(t => t.Tasks)
             .FirstOrDefault(e => e.Id == id);
 
-        public DetailsProjectViewModel GetDetailsProjectViewModel(Project project)
+        public DetailsProjectViewModel GetDetailsProjectViewModel(Project project, IQueryable<Task> tasks)
         {
+            project.Tasks = tasks.ToList();
             List<Employee> executors = project.EmployeeProjects
                 .Select(e => e.Employee)
                 .ToList();
@@ -58,7 +59,8 @@ namespace ProjectManager.DAL.Services
                 Project = project,
                 Executors = executors,
                 FreeEmployees = freeEmployess,
-                Priorities = Enum.GetValues(typeof(Priority))
+                Priorities = Enum.GetValues(typeof(Priority)),
+                Statuses = Enum.GetValues(typeof(Status))
             };
             return detailsProjectView;
         }
