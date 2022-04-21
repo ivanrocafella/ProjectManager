@@ -14,16 +14,15 @@ namespace ProjectManager.UI.Controllers
     {
 
         private readonly ProjectService _PService;
-        private readonly EmployeeService _EService;
         private readonly TaskService _TService;
 
-        public TaskController(ProjectService pService, EmployeeService eService, TaskService tService)
+        public TaskController(ProjectService pService, TaskService tService)
         {
             _PService = pService;
-            _EService = eService;
             _TService = tService;
         }
 
+        //Action with adding Task to database
         [HttpPost]
         public JsonResult Add(DetailsProjectViewModel viewModel)
         {
@@ -35,6 +34,7 @@ namespace ProjectManager.UI.Controllers
             return Json(new { succes = false });
         }
 
+        //Action with page Details of Task
         public IActionResult Details(int id)
         {
             Task task = _TService.GetTask(id);
@@ -44,6 +44,7 @@ namespace ProjectManager.UI.Controllers
                 return View(task);
         }
 
+        //Action with page Edit of Task
         public IActionResult Edit(int id)
         {
             Task task = _TService.GetTask(id);
@@ -62,6 +63,7 @@ namespace ProjectManager.UI.Controllers
             }
         }
 
+        //Action with editing of Task
         [HttpPost]
         public IActionResult Edit(EditTaskViewModel viewModel)
         {
@@ -69,6 +71,7 @@ namespace ProjectManager.UI.Controllers
             return RedirectToAction("Details", new { id = viewModel.Id });
         }
 
+        //Action with removing Task from database
         [HttpPost]
         public IActionResult Remove(int id)
         {

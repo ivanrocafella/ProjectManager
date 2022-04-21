@@ -19,11 +19,14 @@ namespace ProjectManager.UI.Controllers
             _PService = pService;
             _EService = eService;
         }
+
+        //Action with page Index of Employee
         public IActionResult Index()
         {
             return View(_EService.GetEmployeesAndEmployeeViewModel());
         }
 
+        //Action with adding new Employee to database
         [HttpPost]
         public JsonResult Add(EmployeesAndEmployeeViewModel viewModel)
         {
@@ -35,6 +38,7 @@ namespace ProjectManager.UI.Controllers
             return Json(new { succes = false });
         }
 
+        //Action with removing Employee from database
         [HttpPost]
         public IActionResult Remove(int id)
         {
@@ -42,6 +46,7 @@ namespace ProjectManager.UI.Controllers
             return Ok();
         }
 
+        //Action with page Details of Employee
         public IActionResult Details(int id)
         {
             Employee employee = _EService.GetEmployee(id);
@@ -52,9 +57,9 @@ namespace ProjectManager.UI.Controllers
                 DetailsEmployeeViewModel detailsEmployeeView = _EService.GetDetailsEmployeeViewModel(employee);
                 return View(detailsEmployeeView);
             }
-
         }
 
+        //Action with adding Employee to Project
         [HttpPost]
         public IActionResult Details(int employeeId, int projectId)
         {
@@ -62,6 +67,7 @@ namespace ProjectManager.UI.Controllers
             return RedirectToAction("Details", "Employee", new { id = employeeId });
         }
 
+        //Action with page Edit of Employee
         public IActionResult Edit(int id)
         {
             Employee employee = _EService.GetEmployee(id);
@@ -74,6 +80,7 @@ namespace ProjectManager.UI.Controllers
             }
         }
 
+        //Action with page editing of Employee
         [HttpPost]
         public IActionResult Edit(EditEmployeeViewModel viewModel)
         {

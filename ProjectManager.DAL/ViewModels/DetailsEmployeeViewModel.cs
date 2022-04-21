@@ -13,6 +13,5 @@ namespace ProjectManager.DAL.ViewModels
         public List<Project> PinnedProjects { get; set; }
         public List<Project> ManagedProjects { get; set; }
         public List<Project> FreeProjects { get; set; }
-        public List<Core.Entities.Task> CreatedTasks { get; set; }
     }
 }

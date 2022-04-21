@@ -20,6 +20,7 @@ namespace ProjectManager.DAL.Services
             _unitOfWork = unitOfWork;
         }
 
+        //Method for getting Employee by id
         public Employee GetEmployee(int id) => _unitOfWork.GetRepository<Employee>()
             .GetAll()
             .Include(ep => ep.EmployeeProjects)
@@ -29,6 +30,7 @@ namespace ProjectManager.DAL.Services
             .Include(et => et.ExecutedTasks)
             .FirstOrDefault(e => e.Id == id);
 
+        //Method for adding a Employee to a project
         public void AddEmployeeToProject(int employeeId, int projectId)
         {
             EmployeeProject employeeProject = new()
@@ -41,10 +43,13 @@ namespace ProjectManager.DAL.Services
             _unitOfWork.Complete();
         }
 
+
+        //Method for getting a list of all employees
         public async Task<List<Employee>> AllEmployees() => await _unitOfWork.GetRepository<Employee>()
            .GetAll()
            .ToListAsync();
 
+        //Method for getting the viewmodel for the employee Index page
         public EmployeesAndEmployeeViewModel GetEmployeesAndEmployeeViewModel()
         {
             EmployeesAndEmployeeViewModel employeesAndEmployee = new()
@@ -54,6 +59,7 @@ namespace ProjectManager.DAL.Services
             return employeesAndEmployee;
         }
 
+        //Method for getting the viewmodel for the employee Edit page
         public EditEmployeeViewModel GetEditEmployeeViewModel(Employee employee)
         {
             EditEmployeeViewModel editEmployeeView = new()
@@ -67,6 +73,7 @@ namespace ProjectManager.DAL.Services
             return editEmployeeView;
         }
 
+        //Method for adding new Employee to the database
         public Employee AddEmployee(EmployeesAndEmployeeViewModel viewModel)
         {
             Employee employee = new()
@@ -80,6 +87,7 @@ namespace ProjectManager.DAL.Services
             return employee;
         }
 
+        //Method for editing an existing Employee
         public void EditEmployee(EditEmployeeViewModel viewModel)
         {
             IRepository<Employee> repository = _unitOfWork.GetRepository<Employee>();
@@ -92,12 +100,14 @@ namespace ProjectManager.DAL.Services
             _unitOfWork.Complete();
         }
 
+        //Method for removing Employee from database
         public void Remove(int id)
         {
             _unitOfWork.GetRepository<Employee>().Remove(id);
             _unitOfWork.Complete();
         }
 
+        //Method for getting the viewmodel for the employee Details page
         public DetailsEmployeeViewModel GetDetailsEmployeeViewModel(Employee employee)
         {
             List<Project> projects = employee.EmployeeProjects
@@ -113,8 +123,7 @@ namespace ProjectManager.DAL.Services
                 Employee = employee,
                 PinnedProjects = projects,
                 ManagedProjects = employee.Projects.ToList(),
-                FreeProjects = freeProjects,
-                CreatedTasks = employee.CreatedTasks.ToList()
+                FreeProjects = freeProjects
             };
             return detailsEmployeeView;
         }

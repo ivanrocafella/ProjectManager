@@ -22,13 +22,16 @@ namespace ProjectManager.DAL.Services
             _unitOfWork = unitOfWork;
         }
 
+        //Method for getting a list of all tasks
         public IQueryable<Task> AllTasks() => _unitOfWork.GetRepository<Task>().GetAll();
 
+        //Method for getting a list of all tasks of one Employee who is involved in the Project
         public List<Task> GetTasksByProjectIdEmployeeId(int projectId, int employeeId) =>
             _unitOfWork.GetRepository<Task>()
             .Find(e => e.ProjectId == projectId && e.ExecutorId == employeeId)
             .ToList();
 
+        //Method for adding new Task to the database
         public Task AddTask(DetailsProjectViewModel viewModel)
         {
             Task task = new()
@@ -46,6 +49,7 @@ namespace ProjectManager.DAL.Services
             return task;
         }
 
+        //Method for getting Task by id
         public Task GetTask(int id) => _unitOfWork.GetRepository<Task>()
         .GetAll()
         .Include(a => a.Autor)
@@ -53,6 +57,7 @@ namespace ProjectManager.DAL.Services
         .Include(t => t.Project)
         .FirstOrDefault(e => e.Id == id);
 
+        //Method for getting the viewmodel for the task Edit page
         public EditTaskViewModel GetEditTaskViewModel(Task task)
         {
             EditTaskViewModel editTaskView = new()
@@ -70,6 +75,7 @@ namespace ProjectManager.DAL.Services
             return editTaskView;
         }
 
+        //Method for editing an existing Task
         public void EditTask(EditTaskViewModel viewModel)
         {
             IRepository<Task> repository = _unitOfWork.GetRepository<Task>();
@@ -86,6 +92,7 @@ namespace ProjectManager.DAL.Services
             _unitOfWork.Complete();
         }
 
+        //Method for removing executing Employee from Task
         public void RemoveFromTask(Task task)
         {
             IRepository<Task> repository = _unitOfWork.GetRepository<Task>();
@@ -94,12 +101,14 @@ namespace ProjectManager.DAL.Services
             _unitOfWork.Complete();
         }
 
+        //Method for removing Task from database
         public void Remove(int id)
         {
             _unitOfWork.GetRepository<Task>().Remove(id);
             _unitOfWork.Complete();
         }
 
+        //Method for getting queryable list of tasks after filtering
         public IQueryable<Task> QueryableTasksOfProjectAfterFilter(string Name, string StatusIdForFiltr, int projectId)
         {
             IQueryable<Task> tasks = AllTasks().Where(e => e.ProjectId == projectId).OrderBy(e => e.Name);
@@ -112,6 +121,7 @@ namespace ProjectManager.DAL.Services
             return tasks;
         }
 
+        //Method for getting queryable list of tasks after sorting
         public IQueryable<Task> QueryableTasksAfterSort(IQueryable<Task> tasks, SortState SortOrder)
         {
             switch (SortOrder)

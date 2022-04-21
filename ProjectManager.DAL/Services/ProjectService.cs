@@ -22,10 +22,12 @@ namespace ProjectManager.DAL.Services
             _unitOfWork = unitOfWork;
         }
 
+        //Method for getting a list of all projects
         public IQueryable<Project> AllProjects() => _unitOfWork.GetRepository<Project>()
             .GetAll()
             .Include(e => e.ProjectManager);
 
+        //Method for getting the viewmodel for the project Index page
         public ProjectsAndProjectViewModel GetProjectsAndProjectViewModel(IQueryable<Project> projects)
         {
             ProjectsAndProjectViewModel projectsAndProjectView = new()
@@ -36,6 +38,7 @@ namespace ProjectManager.DAL.Services
             return projectsAndProjectView;
         }
 
+        //Method for getting Project by id
         public Project GetProject(int id) => _unitOfWork.GetRepository<Project>()
             .GetAll()
             .Include(ep => ep.EmployeeProjects)
@@ -43,6 +46,7 @@ namespace ProjectManager.DAL.Services
             .Include(e => e.ProjectManager)
             .FirstOrDefault(e => e.Id == id);
 
+        //Method for getting the viewmodel for the project Details page
         public DetailsProjectViewModel GetDetailsProjectViewModel(Project project, IQueryable<Task> tasks)
         {
             project.Tasks = tasks.ToList();
@@ -65,6 +69,7 @@ namespace ProjectManager.DAL.Services
             return detailsProjectView;
         }
 
+        //Method for getting the viewmodel for the project Edit page
         public EditProjectViewModel GetEditProjectViewModel(Project project)
         {
             EditProjectViewModel editProjectView = new()
@@ -81,6 +86,7 @@ namespace ProjectManager.DAL.Services
             return editProjectView;
         }
 
+        //Method for adding new Project to the database
         public Project AddProject(ProjectsAndProjectViewModel viewModel)
         {
             Project project = new()
@@ -101,6 +107,7 @@ namespace ProjectManager.DAL.Services
             return project;
         }
 
+        //Method for editing an existing Project
         public void EditProject(EditProjectViewModel viewModel)
         {
             IRepository<Project> repository = _unitOfWork.GetRepository<Project>();
@@ -117,12 +124,14 @@ namespace ProjectManager.DAL.Services
             _unitOfWork.Complete();
         }
 
+        //Method for removing Project from database
         public void Remove(int id)
         {
             _unitOfWork.GetRepository<Project>().Remove(id);
             _unitOfWork.Complete();
         }
 
+        //Method for removing executing Employee from Project
         public void RemoveFromProject(int projectId, int employeeId)
         {
             IRepository<EmployeeProject> repository = _unitOfWork.GetRepository<EmployeeProject>();
@@ -133,6 +142,7 @@ namespace ProjectManager.DAL.Services
             _unitOfWork.Complete();
         }
 
+        //Method for removing leading Employee from Project
         public void RemoveProjectManagerFromProject(int id)
         {
             IRepository<Project> repository = _unitOfWork.GetRepository<Project>();
@@ -142,6 +152,7 @@ namespace ProjectManager.DAL.Services
             _unitOfWork.Complete();
         }
 
+        //Method for getting queryable list of projects after filtering
         public IQueryable<Project> QueryableProjcetsAfterFilter(DateTime DateStartFrom, DateTime DateStartBefore,
                                                                 string Name, string PriorityIdForFiltr)
         {
@@ -162,6 +173,7 @@ namespace ProjectManager.DAL.Services
             return projects;
         }
 
+        //Method for getting queryable list of projects after sorting
         public IQueryable<Project> QueryableProjectsAfterSort(IQueryable<Project> projects, SortState SortOrder)
         {
             switch (SortOrder)

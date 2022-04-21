@@ -52,9 +52,9 @@
         </a>
     }
 </div>
-<h2>Закрепленные задачи в качестве создателя</h2>
+<h2>Закрепленные задачи в качестве автора</h2>
 <div class="card-column">
-    @foreach (var item in Model.CreatedTasks)
+    @foreach (var item in Model.Employee.CreatedTasks)
     {
         <a class="card href_card" id="a_@item.Id" style="display: block; text-decoration: none;" asp-controller="Task" asp-action="Details" asp-route-id="@item.Id">
             <div class="card-body text-primary">
@@ -63,7 +63,18 @@
         </a>
     }
 </div>
-<h2>Незакрепленные проекты</h2>
+<h2>Закрепленные задачи в качестве исполнителя</h2>
+<div class="card-column">
+    @foreach (var item in Model.Employee.ExecutedTasks)
+    {
+        <a class="card href_card" id="a_@item.Id" style="display: block; text-decoration: none;" asp-controller="Task" asp-action="Details" asp-route-id="@item.Id">
+            <div class="card-body text-primary">
+                <h5 class="card-title text-center" style="color: black;">@item.Name</h5>
+            </div>
+        </a>
+    }
+</div>
+<h2>Добавить ещё проект</h2>
 <form class="pb-5" action="/Employee/Details" method="post">
     <div class="form-group">
         <select name="projectId" class="selectpicker" data-live-search="true">
@@ -76,7 +87,7 @@
     </div>
     <input name="employeeId" type="hidden" value="@Model.Employee.Id">
     <div class="form-group">
-        <button type="submit" class="btn btn-primary form-control btn-submit">Добавить</button>
+        <button type="submit" style="max-width: 250px" class="btn btn-primary form-control btn-submit">Добавить</button>
     </div>
 </form>
 

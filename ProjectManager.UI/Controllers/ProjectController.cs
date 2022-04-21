@@ -24,6 +24,7 @@ namespace ProjectManager.UI.Controllers
             _TService = tService;
         }
 
+        //Action with page Index of Project
         public IActionResult Index(DateTime DateStartFrom, DateTime DateStartBefore,
                                    string Name, string PriorityIdForFiltr, SortState SortOrder = SortState.DateStartDesc)
         {
@@ -39,6 +40,7 @@ namespace ProjectManager.UI.Controllers
             return View(projectsAndProject);
         }
 
+        //Action with page Details of Project
         public IActionResult Details(int id, string Name, 
                                      string StatusIdForFiltr, SortState SortOrder = SortState.NameAsc)
         {
@@ -56,9 +58,9 @@ namespace ProjectManager.UI.Controllers
                                                              _TService.QueryableTasksAfterSort(tasks, SortOrder));
                 return View(detailsProjectView);
             }
-
         }
-
+        
+        //Action with adding Employee to Project
         [HttpPost]
         public IActionResult Details(int employeeId, int projectId)
         {
@@ -66,6 +68,7 @@ namespace ProjectManager.UI.Controllers
             return RedirectToAction("Details", "Project", new { id = projectId });
         }
 
+        //Action with adding new Project to database
         [HttpPost]
         public JsonResult Add(ProjectsAndProjectViewModel viewModel)
         {
@@ -80,6 +83,7 @@ namespace ProjectManager.UI.Controllers
             return Json(new { succes = false });
         }
 
+        //Action with removing Project from database
         [HttpPost]
         public IActionResult Remove(int id)
         {
@@ -87,6 +91,7 @@ namespace ProjectManager.UI.Controllers
             return Ok();
         }
 
+        //Action with removing executing Employee from Project
         [HttpPost]
         public IActionResult RemoveFromProject(int projectId, int employeeId)
         {
@@ -97,12 +102,15 @@ namespace ProjectManager.UI.Controllers
             return Ok();
         }
 
+        //Action with removing leading Employee from Project
         [HttpPost]
         public IActionResult RemoveProjectManagerFromProject(int id)
         {
             _PService.RemoveProjectManagerFromProject(id);
             return Ok();
         }
+
+        //Action with page Edit of Project
         public IActionResult Edit(int id)
         {
             Project project = _PService.GetProject(id);
@@ -115,6 +123,7 @@ namespace ProjectManager.UI.Controllers
             }
         }
 
+        //Action with editing Project
         [HttpPost]
         public IActionResult Edit(EditProjectViewModel viewModel)
         {
@@ -122,10 +131,5 @@ namespace ProjectManager.UI.Controllers
             return RedirectToAction("Details", new { id = viewModel.Id });
         }
 
-
-        //Validation
-
-        //   [AcceptVerbs("GET", "POST")]
-        //   public bool CheckDate(DateTime dateStart) => dateStart >= DateTime.Now && dateStart < DateTime.MaxValue || dateStart == DateTime.MinValue;
     }
 }

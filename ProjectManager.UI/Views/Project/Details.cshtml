@@ -62,7 +62,7 @@
         <div class="card-column" id="tasks">
             @if (Model.Project.Tasks.Count == 0)
             {
-                <h2>Задачи ещё не добавлены</h2>
+                <h3>Задачи ещё не добавлены</h3>
             }
             else
             {
@@ -116,7 +116,7 @@
     </div>
 </div>
 
-<h2>Свободные сотрудники</h2>
+<h2>Добавить ещё сотрудника</h2>
 <form class="pb-5" action="/Project/Details" method="post">
     <div class="form-group">
         <select name="employeeId" class="selectpicker" data-live-search="true">
@@ -129,7 +129,7 @@
     </div>
     <input name="projectId" type="hidden" value="@Model.Project.Id">
     <div class="form-group">
-        <button type="submit" class="btn btn-primary form-control btn-submit">Добавить</button>
+        <button type="submit" style="max-width: 250px" class="btn btn-primary form-control btn-submit">Добавить</button>
     </div>
 </form>
 

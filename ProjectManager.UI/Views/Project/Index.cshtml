@@ -19,7 +19,8 @@
                 {
                     <a class="card href_card" id="a_@item.Id" style="display: block; text-decoration: none;" asp-controller="Project" asp-action="Details" asp-route-id="@item.Id">
                         <div class="card-body text-primary">
-                            <h5 class="card-title text-center" style="color: black;">@item.Name</h5>
+                            <h5 class="card-title text-center" style="color: black;">Название: @item.Name</h5>
+                            <h5 class="card-title text-center" style="color: black;">Дата начала: @item.DateStart</h5>
                             <input type="button" class="project_remove btn btn-danger" onclick="remove('@item.Id')" value="Удалить" />
                         </div>
                     </a>
@@ -150,7 +151,7 @@
                         if (response.success) {
                             let a = '<a class="card href_card" id="a_' + response.projectJS.id + '" style="display: block; text-decoration: none;" href="/Project/Details/' + response.projectJS.id + '">' +
                                 '<div class="card-body text-primary">' +
-                                '<h5 class="card-title text-center" style="color: black;">' + response.projectJS.name + '</h5>' +
+                                '<h5 class="card-title text-center" style="color: black;">Название: ' + response.projectJS.name + '</h5>' +
                                 '<input type="button" class="project_remove btn btn-danger" onclick="remove(' + response.projectJS.id + ')" value="Удалить"/>' +
                                 '</div></a>';
                             $('#projects h2').hide()
